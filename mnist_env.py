@@ -9,8 +9,6 @@ from torchvision.datasets import MNIST
 from torchvision import transforms
 import matplotlib.pyplot as plt
 
-from IPython import embed
-
 MAX_STEPS = 20
 WINDOW_SIZE = 7
 RANDOM_LOC = False
@@ -45,9 +43,9 @@ class MNISTEnv(gym.Env):
         test_set = MNIST('/data', train=False, download=True, transform=transforms.ToTensor())
 
         x_train = torch.stack([x[0] for x in train_set]).squeeze()
-        x_test = torch.stack([x[0] for x in test_set])
+        x_test = torch.stack([x[0] for x in test_set]).squeeze()
 
-        y_train = torch.tensor([x[1] for x in train_set]).squeeze()
+        y_train = torch.tensor([x[1] for x in train_set])
         y_test = torch.tensor([x[1] for x in test_set])
         
         if type == 'train':
