@@ -1,0 +1,8 @@
+# base
+numpy
+torch
+torchvision
+gym #  openAI gym
+
+# plot
+matplotlib

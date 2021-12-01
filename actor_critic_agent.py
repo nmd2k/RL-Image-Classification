@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+from IPython import embed
 
 class MNISTNet(nn.Module):
     '''
@@ -112,7 +113,7 @@ class ActorCriticNNAgent:
         
         # feed observation as input to net to get distribution as output
         x = self.obs_to_input(o)
-        x = numpy_to_torch([x])
+        x = x.unsqueeze(0).float()
         y1, y2 = self.model(x)
         
         pi = torch_to_numpy(y1).flatten()
@@ -179,7 +180,7 @@ class ActorCriticNNAgent:
             T = len(R_disc)
             
             # forward pass, Y1 is pi(a | s), Y2 is V(s)
-            X = numpy_to_torch([self.obs_to_input(o) for o in O])
+            X = torch.stack([self.obs_to_input(o) for o in O]).float()
             Y1, Y2 = self.model(X)
             pi = Y1
             Vs_curr = Y2.view(-1)

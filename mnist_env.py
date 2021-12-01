@@ -2,8 +2,14 @@ import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
-from keras.datasets import mnist
+# from keras.datasets import mnist
+# import torchvision
+import torch
+from torchvision.datasets import MNIST
+from torchvision import transforms
 import matplotlib.pyplot as plt
+
+from IPython import embed
 
 MAX_STEPS = 20
 WINDOW_SIZE = 7
@@ -34,8 +40,15 @@ class MNISTEnv(gym.Env):
         
         if seed:
             np.random.seed(seed=seed)
-        
-        (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+        train_set = MNIST('/data', train=True, download=True, transform=transforms.ToTensor())
+        test_set = MNIST('/data', train=False, download=True, transform=transforms.ToTensor())
+
+        x_train = torch.stack([x[0] for x in train_set]).squeeze()
+        x_test = torch.stack([x[0] for x in test_set])
+
+        y_train = torch.tensor([x[1] for x in train_set]).squeeze()
+        y_test = torch.tensor([x[1] for x in test_set])
         
         if type == 'train':
             self.X = x_train
@@ -47,7 +60,7 @@ class MNISTEnv(gym.Env):
             self.Y = y_test
             self.n = len(y_test)
             
-        h, w = self.X[0].shape
+        h, w = self.X.shape[-2:]
         self.h = h // WINDOW_SIZE
         self.w = w // WINDOW_SIZE
         
